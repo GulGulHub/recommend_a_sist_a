@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block head %}
+<title>Welcome To Recommend A Sista</title>
+<link rel="stylesheet" href="static/style.css">
+{% endblock %}
+{% block side %}
+
+<p> find a sist*A</p>
+<p> recommend a sista</p>
+<p> settings </p>
+
+
+{% endblock %}
+
+{% block col %}
+<p> you have successfully logged in !!! </p>
+
+<!-- Foto von <a href="https://unsplash.com/@wonderlane?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Wonderlane</a> auf <a href="https://unsplash.com/de/s/fotos/star-trek?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  -->
+
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{url_for('static', filename='enterprise.jpg')}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="Welcome back NAME">Welcome back NAME</h5>
+        <p class="card-text">Here is an overview of your last searches and recommendations</p>
+        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="row g-5 mt-5 pt-5">
+  <h1 class="display-1">Find a Sist*A</h1>
+  <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
+</div>
+
+<!-- Photo by <a href="https://unsplash.com/@thomaskinto?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Thomas Kinto</a> on <a href="https://unsplash.com/s/photos/map?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  -->
+<div class="row m-5">
+<img  src="{{url_for('static', filename='map.jpg')}}">
+</div>
+
+<div class="row g-5 mt-5 pt-5">
+  <h1 class="display-1">Recommend a Sist*A</h1>
+  <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
+</div>
+
+
+{% endblock %}
+{% block body %}
+
+
+{% endblock %}
