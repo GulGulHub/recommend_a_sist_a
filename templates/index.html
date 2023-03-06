@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block head %}
 <title>Welcome To Recommend A Sista</title>
-<link rel="stylesheet" href="static/style.css">
+<link href="static/style.css" rel="stylesheet">
 {% endblock %}
 
 {% block side %}
  <nav class="nav flex-column ">
-                <a class="nav-link active text-white" aria-current="page" href="#">What is recommend a Sist*a ?</a>
+                <a aria-current="page" class="nav-link active text-white" href="#">What is recommend a Sist*a ?</a>
                 <a class="nav-link text-white" href="#">Who and why Sist*A ?</a>
                 <a class="nav-link text-white" href="#"> Sign UP or get in touch</a>
             </nav>
@@ -23,48 +23,10 @@
 
                         <div class="text-center">
                             <h4 class="mt-1 mb-5 pb-1">Welcome to Recommend a Sist*A </h4>
+                            <a class="btn dark" href="{{url_for('login')}}"> Log In </a>
+                            <a class="btn dark" href="{{url_for('register')}}"> Register </a>
+
                         </div>
-
-                        <!-- <form>
-                             <p>Please login to your account</p>
-
-                             <div class="form-outline mb-4">
-                                 <input type="email" id="form2Example11" class="form-control"
-                                        placeholder="Phone number or email address"/>
-                                 <label class="form-label" for="form2Example11">Username</label>
-                             </div>
-
-                             <div class="form-outline mb-4">
-                                 <input type="password" id="form2Example22" class="form-control"/>
-                                 <label class="form-label" for="form2Example22">Password</label>
-                             </div>
-
-                             <div class="text-center pt-1 mb-5 pb-1">
-                                 <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                         type="button">Log
-                                     in
-                                 </button>
-                                 <a class="text-muted" href="#!">Forgot password?</a>
-                             </div>
-
-
-                         </form> -->
-
-                        <div class="container">
-                            <h1>Please login</h1>
-                            <br>
-                            <form action="/home" method="post">
-                                <input type="text" placeholder="Username" name="username" value="{{
-          request.form.username }}">
-                                <input type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}">
-                                <input class="btn btn-default" type="submit" value="Login">
-                            </form>
-                            {% if error %}
-                            <p class="error"><strong>Error:</strong> {{ error }}
-                                {% endif %}
-                        </div>
-
                     </div>
                 </div>
                 <div class="col-lg-6 d-flex align-items-center">

@@ -1,17 +1,20 @@
-from flask import Flask, render_template, redirect, url_for, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask import Flask, render_template, redirect, url_for, request, flash
+from flask_login import  LoginManager, login_user, logout_user, login_required, current_user
 #from models.user import User
 from flask_sqlalchemy import SQLAlchemy
+from forms import RegistrationForm, LoginForm
+from sqlalchemy.exc import IntegrityError
+import hashlib
+
 from flask_login import UserMixin
 from datetime import datetime
 
 
+app = Flask(__name__)
 
 login_manager = LoginManager()
-
-
-app = Flask(__name__)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
 app.config['SECRET_KEY'] = "DxoTNR5WqA4MmgYk"
@@ -52,6 +55,9 @@ class User(UserMixin, db.Model):
         db.session.commit()
 
 
+@classmethod
+def get_id(cls, user_id):
+    return cls.query.filter_by(id=user_id).first()
 
 
 @login_manager.user_loader
@@ -59,46 +65,75 @@ def load_user(user_id):
     return User.get(user_id)
 
 
-
-# @app.route('/add', methods=['GET', 'POST'])
-# def add_student():
-#     if request.method == 'POST':
-#         student = Students(request.form['name'], request.form['city'], request.form['addr'], request.form['pin'])
-#         # Inserts records into a mapping table
-#         db.session.add(student)
-#         db.session.commit()
-#     return render_template('new.html')
-#
-#
-#
-# @app.route('/showStudents/<city>')
-# @app.route('/showStudents/')
-# def show_students(city=None):
-#     if city:
-#         students_list = Students.query.filter_by(city=city).all()
-#     else:
-#         students_list = Students.query.all()
-#     return render_template('show_all.html', students=students_list)
-
-
-
 @app.route('/', methods=['GET', 'POST'])
+def start():
+    return render_template('index.html')
+
+
+@app.route("/login", methods=['GET', 'POST'])
 def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
+    # Sanity check: if the user is already authenticated then go back to home page
+    #if current_user.is_authenticated:
+     #   return redirect(url_for('home'))
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(display_name=form.username.data).first()
+        hashed_input_password = hashlib.md5(form.password.data.encode()).hexdigest()
+        if user and user.password == hashed_input_password:
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
-            return redirect(url_for('home'))
-    return render_template('index.html', error=error)
+            flash('Login Unsuccessful. Please check user name and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash(f'You have logged out!', 'success')
+    return redirect(url_for('home'))
+
 
 @app.route('/home', methods=['GET','POST'])
 def home():
     return render_template('home.html')
 
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    # Sanity check: if the user is already authenticated then go back to home page
+    #if current_user.is_authenticated:
+     #   return redirect(url_for('home'))
+
+    # Otherwise process the RegistrationForm from request (if it came)
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        # hash user password, create user and store it in database
+        hashed_password = hashlib.md5(form.password.data.encode()).hexdigest()
+        user = User(
+            full_name=form.fullname.data,
+            display_name=form.username.data,
+            email=form.email.data,
+            password=hashed_password)
+
+        try:
+            user.insert()
+            flash(f'Account created for: {form.username.data}!', 'success')
+            return redirect(url_for('home'))
+        # what is this?
+        except IntegrityError as e:
+            flash(f'Could not register! The entered username or email might be already taken', 'danger')
+            print('IntegrityError when trying to store new user')
+            # db.session.rollback()
+
+    return render_template('registration.html', form=form)
+
+
 if __name__ == "__main__":
     app.app_context().push()
-    db.create_all()
+    #db.create_all()
 
 

@@ -1,42 +1,44 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
-from datetime import datetime
-
-
-db = SQLAlchemy(app)
-
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(200), nullable=False)  # i.e Hanna Barbera
-    display_name = db.Column(db.String(20), unique=True, nullable=False)  # i.e hanna_25
-    email = db.Column(db.String(120), unique=True, nullable=False)  # i.e hanna@hanna-barbera.com
-    password = db.Column(db.String(32), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    is_authenticated = db.Column(db.Boolean, nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
-    is_anonymus = db.Column(db.Boolean, nullable=False)
-
-
-
-    @classmethod
-    def get_id(cls, user_id):
-        return cls.query.filter_by(id=user_id).first()
-
-    def __repr__(self):
-        return f"User({self.id}, '{self.display_name}', '{self.email}')"
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_login import UserMixin
+# from datetime import datetime
+#
+#
+#
+#
+#
+#
+# class User(UserMixin, db.Model):
+#     __tablename__ = 'users'
+#
+#     id = db.Column(db.Integer, primary_key=True)
+#     full_name = db.Column(db.String(200), nullable=False)  # i.e Hanna Barbera
+#     display_name = db.Column(db.String(20), unique=True, nullable=False)  # i.e hanna_25
+#     email = db.Column(db.String(120), unique=True, nullable=False)  # i.e hanna@hanna-barbera.com
+#     password = db.Column(db.String(32), nullable=False)
+#     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     is_authenticated = db.Column(db.Boolean, nullable=False)
+#     is_active = db.Column(db.Boolean, nullable=False)
+#     is_anonymus = db.Column(db.Boolean, nullable=False)
+#
+#
+#
+#     @classmethod
+#     def get_id(cls, user_id):
+#         return cls.query.filter_by(id=user_id).first()
+#
+#     def __repr__(self):
+#         return f"User({self.id}, '{self.display_name}', '{self.email}')"
+#
+#     def insert(self):
+#         db.session.add(self)
+#         db.session.commit()
+#
+#     def delete(self):
+#         db.session.delete(self)
+#         db.session.commit()
+#
+#     def update(self):
+#         db.session.commit()
 
 
 
