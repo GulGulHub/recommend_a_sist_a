@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="static/style.css">
 {% endblock %}
 
-{% block body %}
+{% block col %}
 <div id="container">
     {% for field, errors in form.errors.items() %}
     <div class="alert alert-error">
@@ -95,4 +95,4 @@
         </small>
     </div>
 </div>
-{% endblock body %}
+{% endblock col %}

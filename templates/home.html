@@ -2,6 +2,7 @@
 {% block head %}
 <title>Welcome To Recommend A Sista</title>
 <link rel="stylesheet" href="static/style.css">
+
 {% endblock %}
 {% block side %}
 
@@ -13,7 +14,10 @@
 {% endblock %}
 
 {% block col %}
-<p> you have successfully logged in !!! </p>
+ {% for mesg in get_flashed_messages() %}
+      <h1>{{ mesg }}</h1>
+      {% endfor %}
+
 
 <!-- Foto von <a href="https://unsplash.com/@wonderlane?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Wonderlane</a> auf <a href="https://unsplash.com/de/s/fotos/star-trek?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   -->
@@ -25,9 +29,10 @@
     </div>
     <div class="col-md-8">
       <div class="card-body">
-        <h5 class="Welcome back NAME">Welcome back NAME</h5>
+        <h5 class="Lets get started">Welcome back {{ name }}</h5>
         <p class="card-text">Here is an overview of your last searches and recommendations</p>
         <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
       </div>
     </div>
   </div>
@@ -51,6 +56,7 @@
   <h1 class="display-1">Recommend a Sist*A</h1>
   <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
 </div>
+
 
 
 {% endblock %}

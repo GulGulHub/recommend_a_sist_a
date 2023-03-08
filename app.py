@@ -1,73 +1,38 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
-from flask_login import  LoginManager, login_user, logout_user, login_required, current_user
-#from models.user import User
-from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_manager
+from models.user import User, setup_db, db_drop_and_create_all
 from forms import RegistrationForm, LoginForm
 from sqlalchemy.exc import IntegrityError
 import hashlib
 
-from flask_login import UserMixin
-from datetime import datetime
-
 
 app = Flask(__name__)
+setup_db(app)
+
+""" uncomment at the first time running the app. Then comment back so you do not erase db content over and over """
+#db_drop_and_create_all()
+
+
 
 login_manager = LoginManager()
+login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
-app.config['SECRET_KEY'] = "DxoTNR5WqA4MmgYk"
-
-db = SQLAlchemy(app)
-
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(200), nullable=False)  # i.e Hanna Barbera
-    display_name = db.Column(db.String(20), unique=True, nullable=False)  # i.e hanna_25
-    email = db.Column(db.String(120), unique=True, nullable=False)  # i.e hanna@hanna-barbera.com
-    password = db.Column(db.String(32), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    is_authenticated = db.Column(db.Boolean, nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
-    is_anonymus = db.Column(db.Boolean, nullable=False)
-
-
-
-    @classmethod
-    def get_id(cls, user_id):
-        return cls.query.filter_by(id=user_id).first()
-
-    def __repr__(self):
-        return f"User({self.id}, '{self.display_name}', '{self.email}')"
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-
-@classmethod
-def get_id(cls, user_id):
-    return cls.query.filter_by(id=user_id).first()
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get(user_id)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def start():
     return render_template('index.html')
+
+
+@classmethod
+def get_by_id(cls, user_id):
+    return cls.query.filter_by(id=user_id).first()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(user_id)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -83,6 +48,7 @@ def login():
         if user and user.password == hashed_input_password:
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            flash(f'Welcome back {form.username.data}!')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check user name and password', 'danger')
@@ -98,7 +64,11 @@ def logout():
 
 
 @app.route('/home', methods=['GET','POST'])
+@login_required
 def home():
+    #if login:
+     #   form = LoginForm()
+      #  name = User.query.filter_by(username=form.username.data)
     return render_template('home.html')
 
 
@@ -118,7 +88,6 @@ def register():
             display_name=form.username.data,
             email=form.email.data,
             password=hashed_password)
-
         try:
             user.insert()
             flash(f'Account created for: {form.username.data}!', 'success')
@@ -131,9 +100,11 @@ def register():
 
     return render_template('registration.html', form=form)
 
-
 if __name__ == "__main__":
+    app.run(debug=True)
     app.app_context().push()
-    #db.create_all()
+
+
+
 
 
