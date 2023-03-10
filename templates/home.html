@@ -14,47 +14,177 @@
 {% endblock %}
 
 {% block col %}
- {% for mesg in get_flashed_messages() %}
-      <h1>{{ mesg }}</h1>
-      {% endfor %}
+{% for mesg in get_flashed_messages() %}
+<h1>{{ mesg }}</h1>
+{% endfor %}
 
 
 <!-- Foto von <a href="https://unsplash.com/@wonderlane?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Wonderlane</a> auf <a href="https://unsplash.com/de/s/fotos/star-trek?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   -->
 
 <div class="card mb-3">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{url_for('static', filename='enterprise.jpg')}}" class="img-fluid rounded-start" alt="...">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{url_for('static', filename='enterprise.jpg')}}" class="img-fluid rounded-start" alt="...">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="Lets get started">Welcome back {{ name }}</h5>
+                <p class="card-text">Here is an overview of your last searches and recommendations</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
     </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="Lets get started">Welcome back {{ name }}</h5>
-        <p class="card-text">Here is an overview of your last searches and recommendations</p>
-        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-      </div>
+</div>
+
+<div>
+    <ul class="row nav nav-tabs" id="myTab" role="tablist">
+        <li class="col-2 nav-item" role="presentation">
+            <button class="btn btn-dark" id="find-tab" data-bs-toggle="tab" data-bs-target="#find" type="button"
+                    role="tab" aria-controls="find" aria-selected="true">Find a Sist*A
+            </button>
+        </li>
+
+        <li class="col-4 nav-item" role="presentation">
+            <button class="btn btn-dark" id="rec-tab" data-bs-toggle="tab" data-bs-target="#rec" type="button"
+                    role="tab" aria-controls="rec" aria-selected="false">Recommend a Sist*A
+            </button>
+        </li>
+
+        <li class="col-4 nav-item" role="presentation">
+            <button class="btn btn-dark" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
+                    role="tab" aria-controls="all" aria-selected="false">View all Sist*as
+            </button>
+        </li>
+    </ul>
+
+    <!-- this is where the second tab starts -------------------------------------------------------------------------------->
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="find" role="tabpanel" aria-labelledby="find-tab">
+            <div class="row g-5 mt-5 pt-5">
+                <h1 class="display-1">Find a Sist*A</h1>
+                <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
+            </div>
+
+            <!-- Photo by <a href="https://unsplash.com/@thomaskinto?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Thomas Kinto</a> on <a href="https://unsplash.com/s/photos/map?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+              -->
+            <div class="row m-5">
+                <img src="{{url_for('static', filename='map.jpg')}}">
+            </div>
+
+        </div>
+
+        <!-- this is where the second tab starts ------------------------------------------------------------------------------>
+        <div class="tab-pane fade" id="rec" role="tabpanel" aria-labelledby="rec-tab">
+            <div>
+
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Recommend a Sist_a</legend>
+                        <div class="form-group">
+                            {{ form.fullname.label(class="form-control-label") }}
+                            {% if form.fullname.errors %}
+                            {{ form.fullname(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.fullname.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.fullname(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-group">
+                            {{ form.tag.label(class="form-control-label") }}
+                            {% if form.tag.errors %}
+                            {{ form.tag(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.tag.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.tag(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-group">
+                            {{ form.contact.label(class="form-control-label") }}
+                            {% if form.contact.errors %}
+                            {{ form.contact(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.contact.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.contact(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-group">
+                            {{ form.address.label(class="form-control-label") }}
+                            {% if form.address.errors %}
+                            {{ form.address(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.address.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.address(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+
+                    </fieldset>
+                    <div class="form-group">
+                        {{ form.submit(class='btn btn-outline-info')}}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <!-- third one -->
+
+    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+        <div>
+        <!---------------------creating a table for all ----------------------------------------------------------------->
+
+            <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Tag</th>
+      <th scope="col">contact</th>
+        <th scope="col">address</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for data in Sister %}
+    <tr>
+      <th scope="row">{{Sister.query}}</th>
+      <td>{{Sister.select}}</td>
+      <td>{{sister.tag_name}}</td>
+      <td>{{sister.contact}}</td>
+        <td>{{sister.address}}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+
+            </div>
     </div>
-  </div>
+
+
 </div>
-
-
-
-
-<div class="row g-5 mt-5 pt-5">
-  <h1 class="display-1">Find a Sist*A</h1>
-  <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
-</div>
-
-<!-- Photo by <a href="https://unsplash.com/@thomaskinto?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Thomas Kinto</a> on <a href="https://unsplash.com/s/photos/map?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-  -->
-<div class="row m-5">
-<img  src="{{url_for('static', filename='map.jpg')}}">
-</div>
-
-<div class="row g-5 mt-5 pt-5">
-  <h1 class="display-1">Recommend a Sist*A</h1>
-  <input class="form-control form-control-lg" type="text" placeholder="enter a keyword">
 </div>
 
 

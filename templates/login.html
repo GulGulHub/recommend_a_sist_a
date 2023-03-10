@@ -7,6 +7,10 @@
 
 {% block col %}
 
+ {% for mesg in get_flashed_messages() %}
+      <h1>{{ mesg }}</h1>
+      {% endfor %}
+
 
 <div id="container">
     <div class="content-section">

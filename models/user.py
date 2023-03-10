@@ -3,6 +3,12 @@ from datetime import datetime
 import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv   #for python-dotenv method
+load_dotenv()                    #for python-dotenv method
+
+import os
+
+
 
 db = SQLAlchemy()
 
@@ -15,8 +21,9 @@ def setup_db(app):
     #
     # # https://stackoverflow.com/questions/62688256/sqlalchemy-exc-nosuchmoduleerror-cant-load-plugin-sqlalchemy-dialectspostgre
     # database_path = database_path.replace('postgres://', 'postgresql://')
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
+    # ols sql db
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{os.environ.get("MYSQL_KEY")}@localhost/db_users'
     app.config['SECRET_KEY'] = "DxoTNR5WqA4MmgYk"
     db.app = app
     db.init_app(app)
@@ -26,12 +33,13 @@ def setup_db(app):
     can be used to initialize a clean database
 '''
 def db_drop_and_create_all():
-    db.drop_all()
+
+    #db.drop_all()
     db.create_all()
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'db_users'
 
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(200), nullable=False)  # i.e Hanna Barbera
@@ -64,3 +72,34 @@ class User(UserMixin, db.Model):
 @classmethod
 def get_id(cls, user_id):
     return cls.query.filter_by(id=user_id).first()
+
+class Sister(UserMixin, db.Model):
+    __tablename__ = 'db_sisters'
+
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(200), nullable=False)  # i.e Hanna Barbera
+    tag_name = db.Column(db.String(20), nullable=False)  # architect, it, massage
+    contact = db.Column(db.String(120), nullable=False)  # an email, webpage, phonenumber
+    address = db.Column(db.String(32), nullable=False)  # an address in Berlin
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+
+    @classmethod
+    def get_by_id(cls, user_id):
+        return cls.query.filter_by(id=user_id).first()
+
+    def __repr__(self):
+        return f"User({self.id}, '{self.display_name}', '{self.email}')"
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+

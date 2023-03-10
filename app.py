@@ -1,16 +1,24 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_manager
-from models.user import User, setup_db, db_drop_and_create_all
-from forms import RegistrationForm, LoginForm
+from models.user import User,db, setup_db, db_drop_and_create_all, Sister
+from forms import RegistrationForm, LoginForm, RecommendSisterForm
 from sqlalchemy.exc import IntegrityError
 import hashlib
+from flaskext.mysql import MySQL
+from dotenv import load_dotenv   #for python-dotenv method
+load_dotenv()                    #for python-dotenv method
+import os
+
+
 
 
 app = Flask(__name__)
 setup_db(app)
 
 """ uncomment at the first time running the app. Then comment back so you do not erase db content over and over """
-#db_drop_and_create_all()
+with app.app_context():
+    db_drop_and_create_all()
+
 
 
 
@@ -66,10 +74,25 @@ def logout():
 @app.route('/home', methods=['GET','POST'])
 @login_required
 def home():
-    #if login:
-     #   form = LoginForm()
-      #  name = User.query.filter_by(username=form.username.data)
-    return render_template('home.html')
+    form = RecommendSisterForm()
+    if form.validate_on_submit():
+        sister = Sister(
+            full_name=form.fullname.data,
+            tag_name=form.tag.data,
+            contact=form.contact.data,
+            address=form.address.data)
+        try:
+            sister.insert()
+            flash(f'we have added your recommendation, thank you!')
+            return redirect(url_for('home'))
+        # what is this?
+        except IntegrityError as e:
+            flash(f'Could not register! The entered username or email might be already taken', 'danger')
+            print('IntegrityError when trying to store new user')
+            # db.session.rollback()
+
+    return render_template('home.html', form=form)
+
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -100,9 +123,9 @@ def register():
 
     return render_template('registration.html', form=form)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-    app.app_context().push()
+#if __name__ == "__main__":
+#app.run(debug=True)
+#app.app_context().push()
 
 
 
