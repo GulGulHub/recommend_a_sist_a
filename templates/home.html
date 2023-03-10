@@ -152,36 +152,7 @@
 
     <!-- third one -->
 
-    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-        <div>
-        <!---------------------creating a table for all ----------------------------------------------------------------->
 
-            <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Tag</th>
-      <th scope="col">contact</th>
-        <th scope="col">address</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for data in Sister %}
-    <tr>
-      <th scope="row">{{Sister.query}}</th>
-      <td>{{Sister.select}}</td>
-      <td>{{sister.tag_name}}</td>
-      <td>{{sister.contact}}</td>
-        <td>{{sister.address}}</td>
-    </tr>
-  {% endfor %}
-
-  </tbody>
-</table>
-
-            </div>
-    </div>
 
 
 </div>

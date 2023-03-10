@@ -70,6 +70,11 @@ def logout():
     flash(f'You have logged out!', 'success')
     return redirect(url_for('home'))
 
+@app.route("/allSisters")
+@login_required
+def allSisters():
+    sisters = Sister.query.all()
+    return render_template('allSisters.html', sisters=sisters)
 
 @app.route('/home', methods=['GET','POST'])
 @login_required

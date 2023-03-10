@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block head %}
+<title>Welcome To Recommend A Sista</title>
+<link rel="stylesheet" href="static/style.css">
+
+{% endblock %}
+{% block side %}
+
+<p> find a sist*A</p>
+<p> recommend a sista</p>
+<p> settings </p>
+
+
+{% endblock %}
+
+{% block col %}
+
+<!---------------------creating a table for all ----------------------------------------------------------------->
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Tag</th>
+        <th scope="col">contact</th>
+        <th scope="col">address</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sis in sisters %}
+    <tr>
+        <th scope="row">{{sis.id}}</th>
+        <td>{{sis.full_name}}</td>
+        <td>{{sis.tag_name}}</td>
+        <td>{{sis.contact}}</td>
+        <td>{{sis.address}}</td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}
