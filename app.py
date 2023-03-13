@@ -1,5 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, abort, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, login_manager
+from flask_cors import CORS
+import traceback
 from models.user import User,db, setup_db, db_drop_and_create_all, Sister
 from forms import RegistrationForm, LoginForm, RecommendSisterForm
 from sqlalchemy.exc import IntegrityError
@@ -9,17 +11,15 @@ from dotenv import load_dotenv   #for python-dotenv method
 load_dotenv()                    #for python-dotenv method
 import os
 
-
-
-
 app = Flask(__name__)
 setup_db(app)
+CORS(app)
+
+
 
 """ uncomment at the first time running the app. Then comment back so you do not erase db content over and over """
 with app.app_context():
     db_drop_and_create_all()
-
-
 
 
 login_manager = LoginManager()
@@ -69,12 +69,12 @@ def logout():
     logout_user()
     flash(f'You have logged out!', 'success')
     return redirect(url_for('home'))
-
-@app.route("/allSisters")
-@login_required
-def allSisters():
-    sisters = Sister.query.all()
-    return render_template('allSisters.html', sisters=sisters)
+#
+# @app.route("/allSisters")
+# @login_required
+# def allSisters():
+#     sisters = Sister.query.all()
+#     return render_template('allSisters.html', sisters=sisters)
 
 @app.route('/home', methods=['GET','POST'])
 @login_required
@@ -127,6 +127,108 @@ def register():
             # db.session.rollback()
 
     return render_template('registration.html', form=form)
+
+# @app.route('/home/findASister', methods=['GET'])
+# @login_required()
+# def findASister():
+#     return render_template(
+#         'map.html',
+#         map_key='AAPK7d6d9e7a9b0f49fa8359acf88e28abb9xTZSEGYp1_BO4piSTbtYVRCJ8w-LLbKXrBndhNhJZWpzoBEK6O9RqV4Tmk65yBtZ'
+#     )
+
+
+# @app.route('/detail', methods=['GET'])
+# def detail():
+#     location_id = float(request.args.get('id'))
+#     item = SampleLocation.query.get(location_id)
+#     return render_template(
+#         'detail.html',
+#         item=item,
+#         map_key='AAPK7d6d9e7a9b0f49fa8359acf88e28abb9xTZSEGYp1_BO4piSTbtYVRCJ8w-LLbKXrBndhNhJZWpzoBEK6O9RqV4Tmk65yBtZ'
+#     )
+
+
+# @app.route("/home/recommendASister", methods=['GET', 'POST'])
+# @login_required()
+# def new_location():
+#     form = NewLocationForm()
+#
+#     if form.validate_on_submit():
+#         latitude = float(form.coord_latitude.data)
+#         longitude = float(form.coord_longitude.data)
+#         description = form.description.data
+#
+#         location = SampleLocation(
+#             description=description,
+#             geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
+#         )
+#         location.insert()
+#
+#         flash(f'New location created!', 'success')
+#         return redirect(url_for('home'))
+#
+#     return render_template(
+#         'new-location.html',
+#         form=form,
+#         map_key=os.getenv('MAPS_API_KEY', 'MAPS_API_KEY_WAS_NOT_SET?!')
+#     )
+#
+#
+# @app.route("/api/store_item")
+# def store_item():
+#     try:
+#         latitude = float(request.args.get('lat'))
+#         longitude = float(request.args.get('lng'))
+#         description = request.args.get('description')
+#
+#         location = SampleLocation(
+#             description=description,
+#             geom=SampleLocation.point_representation(latitude=latitude, longitude=longitude)
+#         )
+#         location.insert()
+#
+#         return jsonify(
+#             {
+#                 "success": True,
+#                 "location": location.to_dict()
+#             }
+#         ), 200
+#     except:
+#         exc_type, exc_value, exc_traceback = sys.exc_info()
+#         app.logger.error(traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2))
+#         abort(500)
+#
+#
+# @app.route("/api/get_items_in_radius")
+# def get_items_in_radius():
+#     try:
+#         latitude = float(request.args.get('lat'))
+#         longitude = float(request.args.get('lng'))
+#         radius = int(request.args.get('radius'))
+#
+#         locations = SampleLocation.get_items_within_radius(latitude, longitude, radius)
+#         return jsonify(
+#             {
+#                 "success": True,
+#                 "results": locations
+#             }
+#         ), 200
+#     except:
+#         exc_type, exc_value, exc_traceback = sys.exc_info()
+#         app.logger.error(traceback.print_exception(exc_type, exc_value, exc_traceback, limit=2))
+#         abort(500)
+#
+#
+# @app.errorhandler(500)
+# def server_error(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 500,
+#         "message": "server error"
+#     }), 500
+#
+# #return app
+
 
 #if __name__ == "__main__":
 #app.run(debug=True)

@@ -98,3 +98,14 @@ class RecommendSisterForm(FlaskForm):
 
 
     submit = SubmitField('Recommend')
+
+# class NewLocationForm(FlaskForm):
+#     description = StringField('Location description',
+#                            validators=[DataRequired(), Length(min=1, max=80)])
+#     lookup_address = StringField('Search address')
+#
+#     coord_latitude = HiddenField('Latitude',validators=[DataRequired()])
+#
+#     coord_longitude = HiddenField('Longitude', validators=[DataRequired()])
+#
+#     submit = SubmitField('Create Location')
